@@ -1,0 +1,156 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+   
+}
+
+.background-circle {
+    position: absolute;
+    left: 155px;
+    top: -130px;
+    width: 75vw;
+    height: 120vh;
+    margin: 0;
+    padding: 0;
+    background: rgba(255, 127, 80, 0.266667);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.circle1{
+    position: fixed;
+width: 301px;
+height: 298px;
+left: 795px;
+top: 933px;
+border-radius: 50%;
+
+background: rgba(255, 127, 80, 0.1667);
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.circle2{
+    position: absolute;
+width: 206px;
+height: 192px;
+left: 2200px;
+top: 1150px;
+border-radius: 50%;
+
+
+background: rgba(255, 127, 80, 0.1667);
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.logo {
+    position: absolute;
+width: 248px;
+height: 238px;
+left: 46px;
+top: 15px;
+}
+
+.logo img {
+    width: 80px;
+    height: auto;
+}
+
+.user-icon {
+    display: flex;
+    justify-content:center;
+    align-items: center;
+
+    left: 0;
+    right: 0;
+    top: 0px;
+    bottom: 0;
+    margin: auto;
+    width: 120px;
+    height: 120px;
+    margin: 40px auto 20px;
+}
+
+.user-icon img {
+    width: 100px;
+    height: 100px;
+}
+
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+    top: 190px;
+}
+/* Style du formulaire */
+.form2 {
+    position: relative;
+    margin-top: 20px;
+    bottom: 30px;
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(255, 127, 80, 0.1667);
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style du titre du formulaire */
+.form2 h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Style des labels */
+.form2 label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Style des champs de saisie */
+.form2 input[type="email"],
+.form2 input[type="password"],
+.form2 select {
+    width: 90%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+/* Style des liens */
+.form2 .link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+/* Style des boutons */
+.form2 input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(45deg,rgba(255, 127, 80, 0.7),rgba(255, 127, 80, 0.1667));
+
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+.form2 input[type="submit"]:hover{
+    background: linear-gradient(45deg, rgba(255, 127, 80, 0.1667),rgba(255, 127, 80, 0.7) );
+
+}
+
+/* Style des messages d'erreur */
+.form2 .error {
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* Style des messages de succès */
+.form2 .success {
+    color: rgba(255, 127, 80, 0.7);
+    margin-bottom: 10px;
+}
