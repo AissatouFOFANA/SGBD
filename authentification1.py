@@ -69,7 +69,7 @@ class AuthentificationApp(QWidget):
             QProcess.startDetached("python", ["admin.py"])
         elif profil == "Responsable Pedagogique":
             # Spécifiez le chemin absolu vers pageresp1.py
-            QProcess.startDetached("python", ["pageresp1.py"])
+            QProcess.startDetached("python", ["respclasse.py"])
         elif profil == "Directeur des Etudes":
             # Spécifiez le chemin absolu vers pagedir1.py
             QProcess.startDetached("python", ["pagedir1.py"])
