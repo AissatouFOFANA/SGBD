@@ -1,8 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, QComboBox
-from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtGui import QFont, QColor, QPalette
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QLineEdit, QDateEdit
+from PyQt5.QtCore import Qt
 import mysql.connector
+import subprocess
 
 class AddProfessorPage(QWidget):
     def __init__(self):
@@ -16,10 +16,9 @@ class AddProfessorPage(QWidget):
     def setup_ui(self):
         layout = QVBoxLayout()
 
-        label = QLabel("Ajouter un professeur")
-        label.setAlignment(Qt.AlignCenter)
-        label.setFont(QFont("Arial", 16, QFont.Bold))
-        layout.addWidget(label)
+        title_label = QLabel("Ajouter un professeur")
+        title_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(title_label)
 
         self.nom_input = QLineEdit()
         self.setup_line_edit(self.nom_input, "Nom")
@@ -37,8 +36,10 @@ class AddProfessorPage(QWidget):
         self.setup_line_edit(self.lieu_naissance_input, "Lieu de Naissance")
         layout.addWidget(self.lieu_naissance_input)
 
-        self.date_naissance_input = QLineEdit()
-        self.setup_line_edit(self.date_naissance_input, "Date de Naissance (YYYY-MM-DD)")
+        self.date_naissance_label = QLabel("Date de Naissance")
+        layout.addWidget(self.date_naissance_label)
+
+        self.date_naissance_input = QDateEdit(calendarPopup=True)
         layout.addWidget(self.date_naissance_input)
 
         self.diplome_formation_input = QLineEdit()
@@ -68,15 +69,14 @@ class AddProfessorPage(QWidget):
         add_button = QPushButton("Ajouter")
         add_button.setStyleSheet("""
             QPushButton {
-                background-color: #F4D03F;
+                background-color: #4CAF50;
                 color: white;
-                font-weight: bold;
-                border: none;
-                border-radius: 25px;
                 padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
             }
             QPushButton:hover {
-                background-color: #F7DC6F;
+                background-color: #45a049;
             }
         """)
         add_button.clicked.connect(self.add_professor)
@@ -85,15 +85,14 @@ class AddProfessorPage(QWidget):
         back_button = QPushButton("Retour")
         back_button.setStyleSheet("""
             QPushButton {
-                background-color: #9B59B6;
+                background-color: #f44336;
                 color: white;
-                font-weight: bold;
-                border: none;
-                border-radius: 25px;
                 padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
             }
             QPushButton:hover {
-                background-color: #BB8FCE;
+                background-color: #da190b;
             }
         """)
         back_button.clicked.connect(self.go_back)
@@ -103,17 +102,15 @@ class AddProfessorPage(QWidget):
 
     def setup_line_edit(self, line_edit, placeholder, is_password=False):
         line_edit.setPlaceholderText(placeholder)
-        line_edit.setFont(QFont("Arial", 12))
         if is_password:
             line_edit.setEchoMode(QLineEdit.Password)
 
     def add_professor(self):
-        # Récupérer les données du formulaire
         nom = self.nom_input.text()
         prenom = self.prenom_input.text()
         situation_matrimoniale = self.situation_matrimoniale_input.text()
         lieu_naissance = self.lieu_naissance_input.text()
-        date_naissance = self.date_naissance_input.text()
+        date_naissance = self.date_naissance_input.date().toString("yyyy-MM-dd")
         diplome_formation = self.diplome_formation_input.text()
         autre_diplome = self.autre_diplome_input.text()
         matieres_enseignees = self.matieres_enseignees_input.text()
@@ -121,7 +118,6 @@ class AddProfessorPage(QWidget):
         login = self.login_input.text()
         password = self.password_input.text()
 
-        # Connexion à la base de données
         try:
             connection = mysql.connector.connect(
                 host="localhost",
@@ -131,8 +127,7 @@ class AddProfessorPage(QWidget):
             )
             cursor = connection.cursor()
 
-            # Requête d'insertion
-            query = "INSERT INTO professeurs (Nom_Professeur, Prenom_Professeur, Situation_Matrimoniale, Lieu_Naissance, Date_Naissance, Diplome_Formation, Autre_Diplome, Matieres_Enseignees, Autre_Matiere, Login_Professeur, Passwd_Professeur) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            query = "INSERT INTO professeurs (Nom, Prenom, Situation_Matrimoniale, Lieu_Naissance, Date_Naissance, Diplome_Formation, Autre_Diplome, Matieres_Enseignees, Autre_Matiere, Login, Password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
             cursor.execute(query, (nom, prenom, situation_matrimoniale, lieu_naissance, date_naissance, diplome_formation, autre_diplome, matieres_enseignees, autre_matiere, login, password))
             connection.commit()
             print("Le professeur a été ajouté avec succès !")
@@ -143,9 +138,8 @@ class AddProfessorPage(QWidget):
             print("Erreur lors de l'ajout du professeur :", error)
 
     def go_back(self):
-        # Redirection vers la page de gestion des professeurs
-        url = QUrl("gestion_professeurs.py")
-        QDesktopServices.openUrl(url)
+        subprocess.Popen(["python", "admin.py"])
+        self.close()
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QTableWidget, QTableWidgetItem, QHBoxLayout, QComboBox
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QUrl
 import mysql.connector
 import webbrowser
 
@@ -119,13 +119,13 @@ class ManageStudentsAndSubjectsPage(QWidget):
             print("Erreur :", error)
 
     def add_student(self):
-        webbrowser.open("ajouter_etudiant.php")
+        webbrowser.open("compte.py")
 
     def add_subject(self):
-        webbrowser.open("ajouter_matiere.php")
+        webbrowser.open("ajouter_matiere.py")
 
     def go_back(self):
-        webbrowser.open("liste_classes.php")
+        webbrowser.open("admin.py")
 
 
 if __name__ == "__main__":

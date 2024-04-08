@@ -88,7 +88,7 @@ class AdminPage(QWidget):
         QDesktopServices.openUrl(url)
 
     def handle_gestion_etudiants_matieres(self):
-        url = QUrl("liste_classes.py")
+        url = QUrl("gestion_etu_mat.py")
         QDesktopServices.openUrl(url)
 
     def handle_gestion_classes(self):
