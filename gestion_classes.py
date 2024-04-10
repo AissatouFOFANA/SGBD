@@ -1,8 +1,10 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QTableWidget, QTableWidgetItem, QHBoxLayout, QLineEdit
+from PyQt5.QtWidgets import QMessageBox, QComboBox
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QUrl, Qt
 import mysql.connector
+from PyQt5.QtGui import QDesktopServices
 import webbrowser
 
 class ManageClassesPage(QWidget):
@@ -99,17 +101,117 @@ class ManageClassesPage(QWidget):
         # Redirection vers la page d'ajout de classe
         webbrowser.open("ajout_classe.py")
 
-    def modify_class(self, class_id):
-        # Mettre en place la fonctionnalité de modification de la classe
-        pass
+    def modify_class(self, ID_Classe):
+    # Récupérer les informations de la classe
+        try:
+            conn = self.get_database_connection()
+            cursor = conn.cursor()
+
+            query = "SELECT * FROM classes WHERE ID_Classe = :id"
+            cursor.execute(query, {"id": ID_Classe})
+            classe = cursor.fetchone()
+
+            if not classe:
+                raise Exception("Classe introuvable.")
+
+            # Afficher les informations dans des champs de saisie
+            self.nom_classe_input.setText(classe["Nom_Classe"])
+            self.niveau_scolaire_input.setText(classe["Niveau_Classe"])
+            self.effectif_classe_input.setText(str(classe["Effectif"]))
+
+        except Exception as e:
+            raise Exception(f"Erreur lors de la récupération des informations de la classe : {e}")
+
+        # Mettre à jour les informations de la classe
+        try:
+            nom_classe = self.nom_classe_input.text()
+            niveau_scolaire = self.niveau_scolaire_input.text()
+            effectif = int(self.effectif_classe_input.text())
+
+            # Vérifier la validité de l'effectif
+            if not effectif or effectif <= 0:
+                raise ValueError("Effectif invalide.")
+
+            query = """
+            UPDATE classes 
+            SET Nom_Classe = :nom, 
+                Niveau_Classe = :niveau, 
+                Effectif = :effectif
+            WHERE ID_Classe = :id
+            """
+            cursor.execute(query, {
+                "id": ID_Classe,
+                "nom": nom_classe,
+                "niveau": niveau_scolaire,
+                "effectif": effectif,
+            })
+
+            conn.commit()
+
+            # Afficher un message de confirmation
+            QMessageBox.information(self, "Succès", "Les informations de la classe ont été modifiées avec succès.")
+
+        except ValueError as e:
+            QMessageBox.warning(self, "Erreur", str(e))
+        except Exception as e:
+            raise Exception(f"Erreur lors de la mise à jour des informations de la classe : {e}")
+
+        finally:
+            if conn:
+                conn.close()
+
+
+
+
 
     def delete_class(self, class_id):
-        # Mettre en place la fonctionnalité de suppression de la classe
-        pass
+    # Confirmation de la suppression
+        reply = QMessageBox.question(self, "Confirmation", "Souhaitez-vous vraiment supprimer cette classe ?",
+                                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+
+        if reply == QMessageBox.No:
+            return
+
+        # Vérifier si la classe est liée à des élèves
+        try:
+            connection = mysql.connector.connect(
+                    host="localhost",
+                    user="root",
+                    password="",
+                    database="gdn"
+                )
+            cursor = connection.cursor()
+            query = "SELECT COUNT(*) FROM eleves WHERE ID_Classe = :id"
+            cursor.execute(query, {"id": ID_Classe})
+            nb_eleves = cursor.fetchone()[0]
+
+            if nb_eleves > 0:
+                raise Exception("La classe est liée à des élèves et ne peut pas être supprimée.")
+
+        except Exception as e:
+            raise Exception(f"Erreur lors de la vérification des élèves de la classe : {e}")
+
+        # Supprimer la classe de la base de données
+        try:
+            query = "DELETE FROM classes WHERE ID_Classe = :id"
+            cursor.execute(query, {"id": ID_Classe})
+
+            conn.commit()
+
+            # Afficher un message de confirmation
+            QMessageBox.information(self, "Succès", "La classe a été supprimée avec succès.")
+
+        except Exception as e:
+            raise Exception(f"Erreur lors de la suppression de la classe : {e}")
+
+        finally:
+            if conn:
+                conn.close()
+
 
     def go_back(self):
-        # Redirection vers la page d'administration
-        webbrowser.open("admin.py")
+            # Redirection vers la page d'administration
+            webbrowser.open("admin.py")
 
 
 if __name__ == "__main__":

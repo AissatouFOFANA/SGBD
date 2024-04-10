@@ -1,7 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QLineEdit, QTableWidget, QTableWidgetItem
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QUrl
 import mysql.connector
+from PyQt5.QtGui import QDesktopServices
 
 class GestionProfesseursPage(QWidget):
     def __init__(self):
@@ -112,13 +113,14 @@ class GestionProfesseursPage(QWidget):
 
     def ajouter_professeur(self):
         # Redirection vers la page d'ajout de professeur
-        # Vous pouvez implémenter cette fonctionnalité si nécessaire
-        pass
+       url = QUrl("ajout_professeur.py")
+       QDesktopServices.openUrl(url)
 
     def go_back(self):
         # Redirection vers la page précédente
-        # Vous pouvez implémenter cette fonctionnalité si nécessaire
-        pass
+       url = QUrl("admin.py")
+       QDesktopServices.openUrl(url)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -5,6 +5,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
 
+
 class AdminPage(QWidget):
     def __init__(self):
         super().__init__()
