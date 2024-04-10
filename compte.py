@@ -142,10 +142,56 @@ class ComptePage(QWidget):
             QMessageBox.warning(self, "Erreur", f"Erreur lors de la récupération des comptes : {error}")
 
     def modify_button_clicked(self, row, id, login, role):
-        print(f"Modification du compte {login}...")
+        new_login, ok = QInputDialog.getText(self, 'Modifier le login', f'Nouveau login pour "{login}":')
+        if ok:
+            try:
+                connection = mysql.connector.connect(
+                    host="localhost",
+                    user="root",
+                    password="",
+                    database="gdn"
+                )
+                cursor = connection.cursor()
+
+                query = "UPDATE compte SET login = %s WHERE id = %s"
+                cursor.execute(query, (new_login, id))
+                connection.commit()
+                QMessageBox.information(self, "Succès", f"Le login du compte {login} a été modifié avec succès !")
+
+                cursor.close()
+                connection.close()
+
+                # Rafraîchir la liste des comptes après la modification
+                self.refresh_accounts()
+
+            except mysql.connector.Error as error:
+                QMessageBox.warning(self, "Erreur", f"Erreur lors de la modification du login du compte {login}: {error}")
 
     def delete_button_clicked(self, id):
-        print(f"Suppression du compte avec ID: {id}")
+        confirmation = QMessageBox.question(self, "Supprimer le compte", "Êtes-vous sûr de vouloir supprimer ce compte ?", QMessageBox.Yes | QMessageBox.No)
+        if confirmation == QMessageBox.Yes:
+            try:
+                connection = mysql.connector.connect(
+                    host="localhost",
+                    user="root",
+                    password="",
+                    database="gdn"
+                )
+                cursor = connection.cursor()
+
+                query = "DELETE FROM compte WHERE id = %s"
+                cursor.execute(query, (id,))
+                connection.commit()
+                QMessageBox.information(self, "Succès", "Le compte a été supprimé avec succès !")
+
+                cursor.close()
+                connection.close()
+
+                # Rafraîchir la liste des comptes après la suppression
+                self.refresh_accounts()
+
+            except mysql.connector.Error as error:
+                QMessageBox.warning(self, "Erreur", f"Erreur lors de la suppression du compte avec ID {id}: {error}")
 
     def filter_accounts(self):
         search_text = self.search_input.text().lower()
@@ -156,6 +202,16 @@ class ComptePage(QWidget):
                 if item and search_text in item.text().lower():
                     should_show = True
                     break
+                widget = self.table_widget.cellWidget(row, col)
+                if widget:
+                    if isinstance(widget, QPushButton):
+                        if search_text in widget.text().lower():
+                            should_show = True
+                            break
+                    elif isinstance(widget, QLineEdit):
+                        if search_text in widget.text().lower():
+                            should_show = True
+                            break
             self.table_widget.setRowHidden(row, not should_show)
 
 if __name__ == "__main__":
@@ -163,4 +219,3 @@ if __name__ == "__main__":
     window = ComptePage()
     window.show()
     sys.exit(app.exec_())
-
